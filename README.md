@@ -116,6 +116,20 @@ curl http://127.0.0.1:8000/vehicles
 pytest test_schedule.py
 ```
 
+## Screenshots
+
+![FastAPI docs](assets/fastAPI.png)
+
+![Registration screenshot](assets/registration.png)
+
+![Depot list screenshot](assets/deport.png)
+
+![Scheduler screenshot](assets/schhedular.png)
+
+![Vehicle screenshot](assets/vehicle.png)
+
+![Test scheduler screenshot](assets/test_sechudular.png)
+
 ## Notes
 
 - The scheduler uses an efficient dynamic programming algorithm to handle large task lists.
