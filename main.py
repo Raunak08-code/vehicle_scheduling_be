@@ -1,9 +1,19 @@
+import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 
 from services.schedule import MaintenanceScheduler
 from services.vehicle import ScheduleRequest, ScheduleResponse, DepotsResponse, VehiclesResponse
 from services.doport import DepotClient, DepotAPIError
+
+load_dotenv()
+
+API_HEADERS = {
+    "Authorization": f"Bearer {os.getenv('AFFORDMED_ACCESS_TOKEN')}",
+    "Content-Type": "application/json",
+}
 
 app = FastAPI()
 
@@ -19,7 +29,7 @@ async def schedule_tasks(request: ScheduleRequest):
 
 @app.get("/depots", response_model=DepotsResponse)
 async def get_depots():
-    client = DepotClient()
+    client = DepotClient(headers=API_HEADERS)
     try:
         depots = client.fetch_depots()
         return JSONResponse(content={"depots": depots})
@@ -28,17 +38,16 @@ async def get_depots():
 
 @app.get("/vehicles", response_model=VehiclesResponse)
 async def get_vehicles():
-    client = DepotClient()
+    client = DepotClient(headers=API_HEADERS)
     try:
         vehicles = client.fetch_vehicles()
-        # ensure the response is the expected structure
         return JSONResponse(content={"vehicles": vehicles})
     except DepotAPIError as e:
         raise HTTPException(status_code=502, detail=str(e))
 
 @app.get("/depots/{depot_id}/tasks", response_model=ScheduleResponse)
 async def get_tasks_for_depot(depot_id: int, available_hours: int = 8):
-    client = DepotClient()
+    client = DepotClient(headers=API_HEADERS)
     try:
         tasks = client.fetch_tasks_for_depot(depot_id)
         scheduler = MaintenanceScheduler(tasks, available_hours)

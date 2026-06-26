@@ -28,6 +28,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Environment
+
+Create a `.env` file in the repo root with your AffordMed auth values.
+Use `.env.example` as a template.
+
+```text
+AFFORDMED_CLIENT_ID=your_client_id_here
+AFFORDMED_CLIENT_SECRET=your_client_secret_here
+AFFORDMED_ACCESS_TOKEN=your_access_token_here
+```
+
 ## Run
 
 ```bash

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import requests
 
 from services.vehicle import VehicleTask
@@ -14,13 +14,14 @@ EXTERNAL_BASE = "http://4.224.186.213/evaluation-service"
 class DepotClient:
     """Fetch depot and vehicle data from the external service."""
 
-    def __init__(self, base_url: str = EXTERNAL_BASE):
+    def __init__(self, base_url: str = EXTERNAL_BASE, headers: Optional[Dict[str, str]] = None):
         self.base_url = base_url.rstrip("/")
+        self.headers = dict(headers or {})
 
     def fetch_depots(self) -> List[Dict[str, Any]]:
         url = f"{self.base_url}/depots"
         try:
-            resp = requests.get(url, timeout=10)
+            resp = requests.get(url, timeout=10, headers=self.headers)
             resp.raise_for_status()
             return resp.json().get("depots", [])
         except Exception as e:
@@ -29,7 +30,7 @@ class DepotClient:
     def fetch_vehicles(self) -> List[Dict[str, Any]]:
         url = f"{self.base_url}/vehicles"
         try:
-            resp = requests.get(url, timeout=10)
+            resp = requests.get(url, timeout=10, headers=self.headers)
             resp.raise_for_status()
             return resp.json().get("vehicles", [])
         except Exception as e:
