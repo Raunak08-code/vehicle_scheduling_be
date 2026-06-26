@@ -1,4 +1,4 @@
-from Schedular.schedule import select_vehicle_tasks
+from Schedular.schedule import MaintenanceScheduler
 from Schedular.vehicle import VehicleTask
 
 
@@ -10,8 +10,9 @@ def test_select_vehicle_tasks():
         VehicleTask(id="D", name="Bus D", duration_hours=1, impact_score=3),
     ]
 
-    selected, total_hours, total_score = select_vehicle_tasks(tasks, 5)
+    scheduler = MaintenanceScheduler(tasks, 5)
+    response = scheduler.compute_best_schedule()
 
-    assert total_hours == 5
-    assert total_score == 16
-    assert [task.id for task in selected] == ["A", "B"]
+    assert response.total_duration_hours == 5
+    assert response.total_impact_score == 16
+    assert [task.id for task in response.selected_tasks] == ["A", "B"]

@@ -1,0 +1,9 @@
+{
+  "available_hours": 5,
+  "tasks": [
+    {"id": "A", "name": "Truck A", "duration_hours": 3, "impact_score": 10},
+    {"id": "B", "name": "Van B", "duration_hours": 2, "impact_score": 6},
+    {"id": "C", "name": "Car C", "duration_hours": 4, "impact_score": 12},
+    {"id": "D", "name": "Bus D", "duration_hours": 1, "impact_score": 3}
+  ]
+}

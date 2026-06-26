@@ -1,13 +1,23 @@
 # Vehicle Maintenance Scheduler Microservice
 
-A simple FastAPI microservice that selects maintenance tasks to maximize operational impact without exceeding available mechanic hours.
+This repository contains a FastAPI microservice that solves a daily vehicle maintenance scheduling problem.
+
+The service receives a list of maintenance tasks, each with:
+- `duration_hours` — estimated mechanic hours required
+- `impact_score` — operational importance of completing the task
+
+The solver picks the best subset of tasks such that:
+- the total mechanic hours does not exceed the available budget
+- the total impact score is maximized
 
 ## Project structure
 
 - `main.py` - FastAPI application with `/schedule` endpoint.
-- `Schedular/vehicle.py` - request and task models.
-- `Schedular/schedule.py` - scheduling logic.
+- `Schedular/vehicle.py` - Pydantic models for tasks and request/response payloads.
+- `Schedular/schedule.py` - knapsack-based scheduling algorithm.
 - `requirements.txt` - Python dependencies.
+- `sample_request.json` - example request payload.
+- `test_schedule.py` - simple unit test.
 
 ## Install
 
@@ -23,11 +33,15 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
+Open `http://127.0.0.1:8000/docs` to explore the automatically generated API documentation.
+
 ## API
 
 ### POST /schedule
 
-Request body:
+Send a JSON body with the available mechanic hours and the maintenance tasks.
+
+Example request body:
 
 ```json
 {
@@ -40,7 +54,7 @@ Request body:
 }
 ```
 
-Response:
+Example response:
 
 ```json
 {
@@ -53,6 +67,21 @@ Response:
 }
 ```
 
+## Example curl
+
+```bash
+curl -X POST http://127.0.0.1:8000/schedule \
+  -H "Content-Type: application/json" \
+  -d @sample_request.json
+```
+
+## Testing
+
+```bash
+pytest test_schedule.py
+```
+
 ## Notes
 
-This service uses a 0/1 knapsack algorithm to choose the best combination of tasks.
+- The scheduler uses an efficient dynamic programming algorithm to handle large task lists.
+- External depot/task APIs are not included inside this repository; tasks are provided to the service via the request body.
