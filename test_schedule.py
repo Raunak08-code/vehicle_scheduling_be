@@ -1,5 +1,5 @@
-from Schedular.schedule import MaintenanceScheduler
-from Schedular.vehicle import VehicleTask
+from services.schedule import MaintenanceScheduler
+from services.vehicle import VehicleTask
 
 
 def test_select_vehicle_tasks():

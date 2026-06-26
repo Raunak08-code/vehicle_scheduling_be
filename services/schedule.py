@@ -1,6 +1,6 @@
 from typing import List
 
-from Schedular.vehicle import VehicleTask, ScheduleResponse
+from services.vehicle import VehicleTask, ScheduleResponse
 
 
 class MaintenanceScheduler:
@@ -37,9 +37,9 @@ class MaintenanceScheduler:
             if weight > budget:
                 continue
             for w in range(budget, weight - 1, -1):
-                candidate_score = dp[w - weight] + value
-                if candidate_score > dp[w]:
-                    dp[w] = candidate_score
+                score = dp[w - weight] + value
+                if score > dp[w]:
+                    dp[w] = score
                     choice[w] = idx
                     prev[w] = w - weight
 

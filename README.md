@@ -13,8 +13,9 @@ The solver picks the best subset of tasks such that:
 ## Project structure
 
 - `main.py` - FastAPI application with `/schedule` endpoint.
-- `Schedular/vehicle.py` - Pydantic models for tasks and request/response payloads.
-- `Schedular/schedule.py` - knapsack-based scheduling algorithm.
+- `services/vehicle.py` - Pydantic models for tasks and request/response payloads.
+- `services/schedule.py` - knapsack-based scheduling algorithm.
+- `services/doport.py` - external depot and vehicle API client.
 - `requirements.txt` - Python dependencies.
 - `sample_request.json` - example request payload.
 - `test_schedule.py` - simple unit test.
@@ -67,12 +68,35 @@ Example response:
 }
 ```
 
+### GET /depots
+
+Returns the list of depots fetched from the external evaluation service.
+
+Response schema: `{"depots": [ {"ID": 1, "MechanicHours": 60}, ... ]}`
+
+### GET /vehicles
+
+Returns the list of vehicles/tasks from the external evaluation service.
+
+Response schema: `{"vehicles": [ {"TaskID":"...","Duration":1,"Impact":5}, ... ]}`
+
+### GET /depots/{depot_id}/tasks?available_hours=8
+
+Fetches vehicles, converts them to internal `VehicleTask` models, and returns a computed schedule constrained by `available_hours` (default 8).
+
 ## Example curl
 
 ```bash
 curl -X POST http://127.0.0.1:8000/schedule \
   -H "Content-Type: application/json" \
   -d @sample_request.json
+```
+
+Fetch external depots (may require authentication):
+
+```bash
+curl http://127.0.0.1:8000/depots
+curl http://127.0.0.1:8000/vehicles
 ```
 
 ## Testing
@@ -84,4 +108,4 @@ pytest test_schedule.py
 ## Notes
 
 - The scheduler uses an efficient dynamic programming algorithm to handle large task lists.
-- External depot/task APIs are not included inside this repository; tasks are provided to the service via the request body.
+- The `/depots` and `/vehicles` endpoints proxy the external APIs at `http://4.224.186.213/evaluation-service` and may require authentication in the real evaluation environment. If the external API is protected, update `Schedular/doport.py` to attach the correct auth headers (bearer token or similar).
